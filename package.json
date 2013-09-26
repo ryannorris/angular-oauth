@@ -1,0 +1,24 @@
+{
+  "name": "angular-oauth",
+  "version": "0.1.0",
+  "dependencies": {
+    "angular": "v1.2.0-rc.2"
+  },
+  "homepage": "https://github.com/enginous/angular-oauth",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/enginous/angular-oauth.git"
+  },
+  "authors": [
+    "Fred Jonsson <fridrik@pyth.net>"
+  ],
+  "description": "An OAuth 2.0 Client Library for AngularJS",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
