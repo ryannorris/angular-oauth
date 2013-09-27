@@ -17,7 +17,7 @@ angular.module('googleOauth', ['angularOauth']).
       $rootScope.$apply(function() {
         $http({method: 'GET', url: verificationEndpoint, params: {access_token: accessToken}}).
           success(function(data) {
-            if (data.audience == config.clientId) {
+            if (data.audience === config.clientId) {
               deferred.resolve(data);
             } else {
               deferred.reject({name: 'invalid_audience'});
