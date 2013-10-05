@@ -62,6 +62,10 @@ module.exports = function(grunt) {
       src_test: {
         files: '<%= jshint.srcTest.src %>',
         tasks: ['jshint:srcTest']
+      },
+      build: {
+        files: 'src/**/*.js',
+        tasks: 'default'
       }
     }
   });

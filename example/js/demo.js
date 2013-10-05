@@ -1,7 +1,7 @@
 'use strict';
 
 
-angular.module('demo', ['googleOauth']).
+angular.module('demo', ['yammerOauth']).
 
   config(function(TokenProvider) {
     // Demo configuration for the "angular-oauth demo" project on Google.
@@ -11,9 +11,8 @@ angular.module('demo', ['googleOauth']).
     var baseUrl = document.URL.replace('example/demo.html', '');
 
     TokenProvider.extendConfig({
-      clientId: '191261111313.apps.googleusercontent.com',
-      redirectUri: baseUrl + 'src/oauth2callback.html',  // allow lunching demo from a mirror
-      scopes: ["https://www.googleapis.com/auth/userinfo.email"]
+      clientId: 'szxuABFzacF24UND0OIljw',
+      redirectUri: baseUrl + 'src/oauth2callback.html'  // allow lunching demo from a mirror
     });
   }).
 
