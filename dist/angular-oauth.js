@@ -1,35 +1,29 @@
 'use strict';
 
-
-angular.module('angularOauth.interceptors', [])
-.factory('bearerTokenInterceptor', function($injector, $q) {
+var app = angular.module('angularOauth', [])
+.factory('BearerTokenInterceptor', function($injector, $q, $window) {
   console.log('init interceptor');
   /*
    * This interceptor is available for providers that use the header based
    * bearer token for authentication
    */
   return {
-    'request': function(config) {
+    request: function(config) {
+      $window.alert('intercepted');
       /*
        * We need to use $injector to get access to the Token provider within
        * the body of the ctor - lest we want circular references created
        * by providers that need to use the interceptor (and also need the 
-       * Token provider
+       * Token provider)
        */
-      console.log(config);
       var Token = $injector.get('Token');
       config.headers.get = {'Authorization': 'Bearer ' + Token.get() };
       return config || $q.when(config);
-    },
-
-    'response': function(config) {
-      console.log('well shit' + config);
     }
   };
 });
 
-angular.module('angularOauth', [])
-.provider('Token', function() {
+app.provider('Token', function() {
 
   /**
    * Given an flat object, returns a query string for use in URLs.  Note
@@ -301,7 +295,7 @@ angular.module('googleOauth', ['angularOauth']).
  * https://www.yammer.com/dialog/oauth?client_id=[:client_id]&redirect_uri=[:redirect_uri]&response_type=token
  * https://www.yammer.com/oauth2/access_token.json?client_id=[:client_id]&client_secret=[:client_secret]&code=[:code]
  */
-angular.module('yammerOauth', ['angularOauth', 'angularOauth.interceptors'])
+var app = angular.module('yammerOauth', ['angularOauth'])
 .constant('YammerTokenVerifier', function() {
 
   /*
@@ -311,11 +305,12 @@ angular.module('yammerOauth', ['angularOauth', 'angularOauth.interceptors'])
    */
 
   var $injector = angular.injector(['ng']);
+
   return $injector.invoke(['$http', '$rootScope', '$q', function($http, $rootScope, $q) {
     var deferred = $q.defer();
 
     $rootScope.$apply(function() {
-      $http({ method: 'GET', url: 'https://www.yammer.com/api/v1/users/current.json' })
+      $http.get('https://www.yammer.com/api/v1/users/current.json')
       .success(function(data) {
         deferred.resolve(data);
       })
@@ -330,18 +325,27 @@ angular.module('yammerOauth', ['angularOauth', 'angularOauth.interceptors'])
 
     return deferred.promise;
   }]);
-})
-.config(function(TokenProvider, YammerTokenVerifier) {
+});
+
+app.factory('SomeInterceptor', function($window) {
+  return {
+    request: function(config) {
+      $window.alert('intercepted!');
+      config = config;
+    }
+  };
+});
+
+app.config(function(TokenProvider, YammerTokenVerifier, $httpProvider) {
   TokenProvider.extendConfig({
     authorizationEndpoint: 'https://www.yammer.com/dialog/oauth',
     verifyFunc: YammerTokenVerifier
   });
-})
-.config(function($httpProvider) {
+
   /*
    * Yammer uses a bearer token - in comes the BearerTokenInterceptor!
    */
-  $httpProvider.interceptors.push('bearerTokenInterceptor');
-  console.log('adding interceptors');
+  $httpProvider.interceptors.push('BearerTokenInterceptor');
+  $httpProvider.interceptors.push('SomeInterceptor');
 });
 

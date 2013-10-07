@@ -31,6 +31,7 @@ angular.module('demo', ['yammerOauth']).
               $rootScope.$apply(function() {
                 $scope.accessToken = params.access_token;
                 $scope.expiresIn = params.expires_in;
+                $scope.name = data.first_name;
 
                 Token.set(params.access_token);
               });

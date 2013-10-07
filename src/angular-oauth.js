@@ -1,35 +1,29 @@
 'use strict';
 
-
-angular.module('angularOauth.interceptors', [])
-.factory('bearerTokenInterceptor', function($injector, $q) {
+var app = angular.module('angularOauth', [])
+.factory('BearerTokenInterceptor', function($injector, $q, $window) {
   console.log('init interceptor');
   /*
    * This interceptor is available for providers that use the header based
    * bearer token for authentication
    */
   return {
-    'request': function(config) {
+    request: function(config) {
+      $window.alert('intercepted');
       /*
        * We need to use $injector to get access to the Token provider within
        * the body of the ctor - lest we want circular references created
        * by providers that need to use the interceptor (and also need the 
-       * Token provider
+       * Token provider)
        */
-      console.log(config);
       var Token = $injector.get('Token');
       config.headers.get = {'Authorization': 'Bearer ' + Token.get() };
       return config || $q.when(config);
-    },
-
-    'response': function(config) {
-      console.log('well shit' + config);
     }
   };
 });
 
-angular.module('angularOauth', [])
-.provider('Token', function() {
+app.provider('Token', function() {
 
   /**
    * Given an flat object, returns a query string for use in URLs.  Note
